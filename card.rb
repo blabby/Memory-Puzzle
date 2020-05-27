@@ -1,12 +1,11 @@
 class Card
+    attr_accessor :value
     def initialize(value)
         @value = value
         @faceup = false
     end
 
-    def display
-        if @faceup
-            value
-        end
+    def toggle
+        @faceup = !@faceup
     end
 end
