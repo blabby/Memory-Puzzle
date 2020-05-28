@@ -43,6 +43,9 @@ class Game
 
         break if lose?
     end
+    if @board.win?
+        puts "YOU WIN"
+    end
     puts "Game Over!"
     end
 
