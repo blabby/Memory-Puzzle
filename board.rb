@@ -5,11 +5,12 @@ class Board
         @grid = (:A..:Z).to_a
         @hidden_board = Array.new(4) {Array.new(4, " ")}
         @display_board = Array.new(4) {Array.new(4, " ")}
+        populate
     end
 
-    def display_board
+    def display
         puts "    0    1    2    3   "
-        @display_board.each_with_index do |value,i| #change this to display_board
+        @display_board.each_with_index do |value,i| 
             puts "#{i} #{value}"
         end
     end
@@ -34,7 +35,7 @@ class Board
     end
     end
 
-    #promp user for guess (ex: 0 0  and we will then .split(" "))
+    
     def guess(pos1, pos2)
         @display_board[pos1.first][pos1.last] = @hidden_board[pos1.first][pos1.last]
         @display_board[pos2.first][pos2.last] = @hidden_board[pos2.first][pos2.last]
@@ -53,19 +54,9 @@ class Board
         @display_board.each do |array|
             return false if array.any? {|value| value == " "}
         end
+        puts "YOU WIN!"
         true
     end
-
-    #game
-    #Enter guess for card 1
-    #0 0
-    #@hidden_board[0][0]
-    #change @display board to equal that value
-    #Enter guess for card 2
-    #0 2
-    #@hidden_board[0][2]
-    #if equal to guess1 we will continue on
-    #if not equal we set both @display..[0][0] and @display..[0][2] to " "
 
     def valid_pos?(pos)
         return false if @hidden_board[pos.first][pos.last] != " "
@@ -86,9 +77,3 @@ class Board
     end
 
 end
-
-
-g = Board.new
-g.populate
-g.guess([0,0],[0,1])
-g.display_board
