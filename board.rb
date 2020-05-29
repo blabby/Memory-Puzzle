@@ -19,21 +19,23 @@ class Board
     def populate
         while !filled?
             letter = unique_pair
-            board = @hidden_board
-            pos = board.length
-
+            pos = @hidden_board.length
+            #randomize first pair
             pair1_pos = randomize_pos(pos)
-            while !valid_pos?(pair1_pos)
-                randomize_pos(pair1_pos)
-            end
-            populate_space(pair1_pos, letter)
-
+            valid_pos1 = randomizer(pair1_pos)
+            populate_space(valid_pos1, letter)
+            #randomize second pair
             pair2_pos = randomize_pos(pos)
-            while !valid_pos?(pair2_pos)
-                randomize_pos(pair2_pos)
-            end
-            populate_space(pair2_pos, letter)
+            valid_pos2 = randomizer(pair2_pos)
+            populate_space(valid_pos2, letter)
         end
+    end
+
+    def randomizer(pos)
+        while !valid_pos?(pos)
+            pos = randomize_pos(@hidden_board.length)
+        end
+        return pos if valid_pos?(pos)
     end
 
     def randomize_pos(pos)
