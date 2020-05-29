@@ -20,11 +20,11 @@ class Board
         while !filled?
             letter = unique_pair
             pos = @hidden_board.length
-            #randomize first pair
+            #randomize first card
             pair1_pos = randomize_pos(pos)
             valid_pos1 = randomizer(pair1_pos)
             populate_space(valid_pos1, letter)
-            #randomize second pair
+            #randomize second card
             pair2_pos = randomize_pos(pos)
             valid_pos2 = randomizer(pair2_pos)
             populate_space(valid_pos2, letter)

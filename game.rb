@@ -1,52 +1,50 @@
 require_relative "card.rb"
 require_relative "board.rb"
+require_relative "human_player.rb"
+require_relative "computer_player.rb"
 class Game
-    def initialize(tries = 15)
+    def initialize(tries = 15, player = "Player 1")
         @board = Board.new
         @tries = tries
+        @player = Player.new(player)
     end
 
     def run
-        @board.display
+        show_board
         while !@board.win?
+            tries_remaining
+            guess1 = get_input
+            while !valid?(guess1)
+                guess1 = get_input
+            end
+            place(guess1)
+            show_board
+
+            guess2 = get_input
+            while !valid?(guess2)
+                guess2 = get_input
+            end
+            place(guess2)
+            show_board
+            pair?(guess1, guess2)
+
+            break if lose?
+            break if @board.win?
+        end
+        puts "Game Over!"
+    end
+
+    def get_input
+        puts "Enter a valid guess (Ex: 0 0  for first position)"
+        guess = gets.chomp.split(" ").map(&:to_i)
+    end
+
+    def tries_remaining
         puts "You have #{@tries} tries left"
-        puts "Enter first guess (Ex: 0 0  for first position)"
-        guess1 = gets.chomp.split(" ").map(&:to_i)
-        while !valid?(guess1)
-            puts "Please enter guess, corresponding to a 4x4 board (0-3)"
-            guess1 = gets.chomp.split(" ").map(&:to_i)
-        end
-
-        place(guess1)
-        @board.display
-
-        puts "Enter second guess (Ex: 0 1  for second position)"
-        guess2 = gets.chomp.split(" ").map(&:to_i)
-        while !valid?(guess2)
-            puts "Please enter guess, corresponding to a 4x4 board (0-3)"
-            guess2 = gets.chomp.split(" ").map(&:to_i)
-        end
-
-        place(guess2)
-        @board.display
-
-        sleep(2)
-        system("clear")
-        
-        if !same(guess1, guess2)
-            @board.revert(guess1, guess2)
-            @board.display
-            @tries -= 1
-        else
-            @board.display
-        end
-
-        break if lose?
     end
-    if @board.win?
-        puts "YOU WIN"
-    end
-    puts "Game Over!"
+
+    def show_board
+        @board.display
     end
 
     def valid?(pos)
@@ -61,9 +59,21 @@ class Game
         @board.display_board[pos1.first][pos1.last] == @board.display_board[pos2.first][pos2.last]   
     end
 
+    def pair?(pos1, pos2)
+        sleep(2)
+        system("clear")
+        if !same(pos1, pos2)
+            @board.revert(pos1, pos2)
+            @board.display
+            @tries -= 1
+        else
+            @board.display
+        end
+    end
+
     def lose?
         if @tries == 0
-        puts "0 tries left!"
+        puts "0 tries left! You Lose!"
         return true
         end
         false
