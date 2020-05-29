@@ -1,11 +1,12 @@
 require_relative "card.rb"
+
 class Board
     attr_accessor :hidden_board, :display_board
     def initialize
         @grid = (:A..:Z).to_a
         @hidden_board = Array.new(4) {Array.new(4, " ")}
         @display_board = Array.new(4) {Array.new(4, " ")}
-        populate
+        populate 
     end
 
     def display
@@ -15,34 +16,32 @@ class Board
         end
     end
 
-    def populate 
+    def populate
         while !filled?
-        letter = unique_pair
-        board = @hidden_board
-        position = board.length
-        pair1_pos = [rand(position), rand(position)]   
-        pair2_pos = [rand(position), rand(position)]   
+            letter = unique_pair
+            board = @hidden_board
+            pos = board.length
 
+            pair1_pos = randomize_pos(pos)
+            while !valid_pos?(pair1_pos)
+                randomize_pos(pair1_pos)
+            end
+            populate_space(pair1_pos, letter)
 
-        while !valid_pos?(pair1_pos)
-        pair1_pos = [rand(position), rand(position)]   
+            pair2_pos = randomize_pos(pos)
+            while !valid_pos?(pair2_pos)
+                randomize_pos(pair2_pos)
+            end
+            populate_space(pair2_pos, letter)
         end
-        board[pair1_pos.first][pair1_pos.last] = Card.new(letter).value
-        while !valid_pos?(pair2_pos)
-        pair2_pos = [rand(position), rand(position)]   
-        end
-        board[pair2_pos.first][pair2_pos.last] = Card.new(letter).value
     end
+
+    def randomize_pos(pos)
+        [rand(pos), rand(pos)]
     end
 
-    
-    def guess(pos1, pos2)
-        @display_board[pos1.first][pos1.last] = @hidden_board[pos1.first][pos1.last]
-        @display_board[pos2.first][pos2.last] = @hidden_board[pos2.first][pos2.last]
-
-        if @hidden_board[pos1.first][pos1.last] !=  @hidden_board[pos2.first][pos2.last]
-            revert(pos1, pos2)
-        end
+    def populate_space(pos, letter)
+        @hidden_board[pos.first][pos.last] = Card.new(letter).value
     end
 
     def revert(pos1, pos2)

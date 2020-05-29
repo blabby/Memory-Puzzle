@@ -1,7 +1,7 @@
 require_relative "card.rb"
 require_relative "board.rb"
 class Game
-    def initialize(tries = 1)
+    def initialize(tries = 15)
         @board = Board.new
         @tries = tries
     end

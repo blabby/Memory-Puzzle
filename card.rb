@@ -1,5 +1,5 @@
 class Card
-    attr_accessor :value, :faceup
+    attr_accessor :value
     def initialize(value)
         @value = value
     end
