@@ -6,25 +6,32 @@ class Game
     def initialize(tries = 15, player = "Player 1")
         @board = Board.new
         @tries = tries
-        @player = Player.new(player)
+        @player = Player.new(player) #Change to Computer.new for computer player
     end
 
     def run
         show_board
         while !@board.win?
             tries_remaining
-            guess1 = get_input
+    
+            guess1 = @player.get_input(length)
             while !valid?(guess1)
-                guess1 = get_input
+                guess1 = @player.get_input(length)
             end
-            place(guess1)
+            @player.store_memory(place(guess1),guess1)
             show_board
 
-            guess2 = get_input
+            card = get_card(guess1)
+
+            if remember?(card) && unique?(card, guess1)
+                guess2 = @player.check_memory(card)
+            else
+            guess2 = @player.get_input(length)
             while !valid?(guess2)
-                guess2 = get_input
+                guess2 = @player.get_input(length)
             end
-            place(guess2)
+        end
+            @player.store_memory(place(guess2), guess2)
             show_board
             pair?(guess1, guess2)
 
@@ -34,13 +41,12 @@ class Game
         puts "Game Over!"
     end
 
-    def get_input
-        puts "Enter a valid guess (Ex: 0 0  for first position)"
-        guess = gets.chomp.split(" ").map(&:to_i)
+    def unique?(card, location)
+        @player.memory[card] != location
     end
 
     def tries_remaining
-        puts "You have #{@tries} tries left"
+        puts "#{@player.name} you have #{@tries} tries left"
     end
 
     def show_board
@@ -49,10 +55,12 @@ class Game
 
     def valid?(pos)
         pos.none? {|pos| pos < 0 || pos > @board.display_board.length - 1}
+        @board.display_board[pos.first][pos.last] == " "
     end
 
     def place(pos)
         @board.display_board[pos.first][pos.last] =  @board.hidden_board[pos.first][pos.last]
+        @board.display_board[pos.first][pos.last]
     end
 
     def same(pos1, pos2)
@@ -69,6 +77,18 @@ class Game
         else
             @board.display
         end
+    end
+
+    def length
+        @board.display_board.length
+    end
+
+    def get_card(pos)
+        @board.display_board[pos.first][pos.last]
+    end
+
+    def remember?(card)
+        @player.memory.include?(card)
     end
 
     def lose?
